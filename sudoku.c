@@ -11,7 +11,8 @@ int main(){
 	randomizeBoard(referenceboard,answerboard);
 	// while(printStartPage() != 'P');
 	set_graphics(VGA_320X200X256);
-	
+	header(8,5);
+
 	printPuzzle(referenceboard);
 	printPuzzle(answerboard);
 	do{
@@ -302,3 +303,12 @@ void printPuzzle(char puzzle[9][9]){
 	printf("-------------------------------\n");
 }
 
+
+//displays header
+header(int x, int y){	
+	write_text("SUDOKU!",120,40,YELLOW,1); //title
+
+	//menu options
+	write_text("1 - Start",40,160,WHITE,0); 
+	write_text("2 - Quit",200,160,WHITE,0);
+}
