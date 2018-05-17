@@ -5,53 +5,69 @@
 #define TRUE 1
 #define PLAY 'p'
 #define QUIT 'q'
+#define CHECK 'c'
+#define MENU 'm'
+#define RIGHT 'd'
+#define LEFT 'a'
+#define UP 'w'
+#define DOWN 's'
+#define INSTRUCTION 'i'
+#define RESET 'r'
+#define NEW 'n'
+#define BACK 'b'
+
+
+char referenceboard[9][9]={};
+char answerboard[9][9]={};
+char highlight_i = -1;
+char highlight_j = -1;
+char key_pressed;
 int main(){
 	int x,y;
 	char a;
-	char referenceboard[9][9]={};
-	char answerboard[9][9]={};
-	char key_pressed = 'p';
-
-	randomizeBoard(referenceboard,answerboard);
-	// while(printStartPage() != 'P');
+	key_pressed = PLAY;
 	set_graphics(VGA_320X200X256);
-	print_board();
-	//start_page(8,5);
-	
-	key_pressed=(char)getch();
-	if (key_pressed == PLAY	){
-		drawRectangle(0,0,320,220, BLACK,-1); //clear screen
-		instruction_page();
-		key_pressed=(char)getch();
-	}
 
-	if(key_pressed == QUIT){
-		set_graphics(VGA_TEXT80X25X16);
-		clrscr();
-	}	
-
-
-	printPuzzle(referenceboard);
-	printPuzzle(answerboard);
+	start_page();
 	do{
-		getCoord(&x,&y);
-		getchar();
-		getInput(&a);
-		insertInput(referenceboard,answerboard,x,y,a);
-		printPuzzle(referenceboard);
-		printPuzzle(answerboard);
-	}while(checkIfFull(answerboard) == -1);
+		key_pressed=(char)getch();
+		if (key_pressed == PLAY	){
+			dummy_page("instruction");
+			(char)getch();
+			dummy_page("press any key to play");
+			(char)getch();
+			randomizeBoard(referenceboard,answerboard);
+			gameproper();
+		}break;
+	// print_board();
+	}	
+	while(key_pressed!=QUIT);
+	quit();
+	
 
-	printf("%d",checkColumn(answerboard));
-	printf("%d",checkRow(answerboard));
 
-}
+// 	printPuzzle(referenceboard);
+// 	printPuzzle(answerboard);
+// 	do{
+// 		getCoord(&x,&y);
+// 		getchar();
+// 		getInput(&a);
+// 		insertInput(referenceboard,answerboard,x,y,a);
+// 		printPuzzle(referenceboard);
+// 		printPuzzle(answerboard);
+// 	}while(checkIfFull(answerboard) == -1);
+
+// 	printf("%d",checkColumn(answerboard));
+// 	printf("%d",checkRow(answerboard));
+
+ }
 
 //sudoku problems
 void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 	//srand(time(NULL));
 	int r = rand() % 10;
-	printf("randmoized %d\n", r);
+	printf("randomized %d\n", r);
+	r=0;
 	if (r==0){
 		char newboard[9][9] = {		
 			{'-','6','-','-','7','2','-','-','1'},
@@ -207,7 +223,7 @@ void copyboard(char fromBoard[9][9],char toBoard[9][9]){
 
 //
 
-int checkIfFull(char answerboard[9][9]){
+int checkIfFull(){
 	int i,j;
 	for(i = 0; i < 9; i++){
 		for(j = 0; j < 9; j++){
@@ -227,34 +243,36 @@ void insertInput(char referenceboard[9][9],char answerboard[9][9],int x, int y, 
 		answerboard[x][y]=a;
 }
 
-int checkRow(char puzzle[9][9]){
+int checkRow(){
 	int i,j,k = 1;
 	for(i = 0; i < 9; i++){
 		for(j = 0; j < 9; j++){
 			do{
-				if(puzzle[i][j] == puzzle[i][k]){
+				if(answerboard[i][j] == answerboard[i][k]){
 					return	-1;
 				}else k++;
 			}while(k < 9);
 		}
 		k = 1;
 	}
+	return TRUE;
 }
 
 
 
-int checkColumn(char puzzle[9][9]){
+int checkColumn(){
 	int i,j,k=1;
 	for(i = 0; i < 9; i ++){
 		for(j = 0; j < 9; j++){
 			do{
-				if(puzzle[i][j] == puzzle[k][j]){
+				if(answerboard[i][j] == answerboard[k][j]){
 					return FALSE;
 				}else k++;
 			}while(k < 9);
 		}
 		k = 1;
 	}
+	return TRUE;
 }
 
 
@@ -268,12 +286,12 @@ int checkColumn(char puzzle[9][9]){
 
 // 	}
 // }
-int checkSquare(char puzzle[9][9]){
+int checkSquare(){
 	char squareElements[9];
 	for (int k = 0; k < 9; k++){
 		for (int i = 0; i < 3; i++){
 			for (int j = 0; j < 3; j++){
-				squareElements[i*j] = puzzle[k/3*3+i][k/3*3+j];
+				squareElements[i*j] = answerboard[k/3*3+i][k/3*3+j];
 			}
 		}
 		if (checker(squareElements) == FALSE)
@@ -325,7 +343,9 @@ void printPuzzle(char puzzle[9][9]){
 
 //gui
 //displays header
-start_page(int x, int y){	
+void start_page(){	
+	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
+
 	write_text("Welcome to Sudoku",100,40,YELLOW,1); //title
 
 	//menu options
@@ -333,45 +353,88 @@ start_page(int x, int y){
 	write_text("Press 'Q' to quit",100,160,WHITE,0);
 }
 
-instruction_page(){
-	write_text("Instruction",100,160,WHITE,1); 
+void solved_page(){
+	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
+	write_text("Puzzle Solved! Congratulations!",100,40,YELLOW,1); //title
+
+
+	write_text("Press 'N' to start new game",100,140,WHITE,0); 
+	write_text("Press 'Q' to quit",100,160,WHITE,0);
+	switch(key_pressed){
+		case NEW:
+			randomizeBoard(referenceboard,answerboard);
+			gameproper();
+			break;
+		case QUIT:
+			quit();
+
+	}
 }
-void drawRectangle(int x, int y, int w, int h, int color,int num){
+
+void unsolved_page(){
+	
+	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
+	write_text("Incorrect answers",100,40,YELLOW,1); //title
+
+
+	write_text("Press 'N' to start new game",100,140,WHITE,0); 
+	write_text("Press 'B' to go back",100,160,WHITE,0);
+	write_text("Press 'Q' to quit",100,180,WHITE,0);	
+	key_pressed=(char)getch();
+	switch(key_pressed){
+		case NEW:
+			randomizeBoard(referenceboard,answerboard);
+			gameproper();
+			break;
+		case BACK:
+			gameproper();
+			break;
+		case QUIT:
+			quit();
+
+	}
+}
+void dummy_page(char * dummy){
+	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
+	write_text(dummy,100,160,WHITE,1); 
+}
+
+void drawRectangle(int x, int y, int w, int h, int color,char num){	
    int i,j;
    char* snum;
    for (i=y;i<=(y+h);i++)
       for (j=x;j<=(x+w);j++)
          write_pixel(j,i,color);
     switch (num){
-     	case 1:
+     	case '1':
     	write_text("1",x+2,y+2,BLACK,0);
     	break;
-     	case 2:
+     	case '2':
     	write_text("2",x+2,y+2,BLACK,0);
     	
     	 break;
-     	case 3:
+     	case '3':
     	write_text("3",x+2,y+2,BLACK,0);
     	
     	 break;
-     	case 4:
+     	case '4':
     	write_text("4",x+2,y+2,BLACK,0);
     	
     	 break;
-     	case 5:
+     	case '5':
     	write_text("5",x+2,y+2,BLACK,0);
 
     	 break;
-     	case 6:
+     	case '6':
     	write_text("6",x+2,y+2,BLACK,0);
     	break;
-     	case 7:
+     	case '7':
     	write_text("7",x+2,y+2,BLACK,0);
     	break;
-     	case 8:
+     	case '8':
     	write_text("8",x+2,y+2,BLACK,0);
     	break;
-     	case 9:
+     	case '9':
 	    write_text("9",x+2,y+2,BLACK,0);
     	break;
     }
@@ -379,19 +442,151 @@ void drawRectangle(int x, int y, int w, int h, int color,int num){
 
 
 void print_board(){
+	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
 
- for (int i = 0; i < 9; i++){
- 	for (int j = 0; j < 9; j++){
- 		drawRectangle(i*20,j*20, 20, 20,BLUE,j+1);
- 		drawRectangle(i*20-10,j*20-10, 10, 10,YELLOW,j+1);
- 	}
- }
-  drawRectangle(145,145, 20, 20,BLUE,0);
-  drawRectangle(150,150, 10, 10,WHITE,9);
-  // drawRectangle(145,150, 5, 10,BLUE,0);
-  // drawRectangle(160,150, 5, 10,BLUE,0);
-  // drawRectangle(150,145, 10, 5,BLUE,0);
-  // drawRectangle(150,160, 10, 5,BLUE,0);
+	draw_board_border();
+	 for (int i = 0; i < 9; i++){
+	 	for (int j = 0; j < 9; j++){
+	 		if (referenceboard[j][i] == '-')
+	 			drawRectangle((i+5.5)*20-2,(j+0.5)*20-2, 10, 10,LIGHTBLUE,answerboard[j][i]);
+	 		else
+	 			drawRectangle((i+5.5)*20-2,(j+0.5)*20-2, 10, 10,BLUE,answerboard[j][i]);
+	 	}
+	 }
+}
 
+void draw_board_border(){
+ drawRectangle(105,3,180,1,YELLOW,' ');
+ drawRectangle(105,63,180,1,YELLOW,' ');
+ drawRectangle(105,123,180,1,YELLOW,' ');
+ drawRectangle(105,183,180,1,YELLOW,' ');
+ drawRectangle(105,3,1,180,YELLOW,' ');
+ drawRectangle(163,3,1,180,YELLOW,' ');
+ drawRectangle(223,3,1,180,YELLOW,' ');
+ drawRectangle(283,3,1,180,YELLOW,' ');
+}
 
+void gameproper(){
+	print_board();
+	init_highlight();
+	move();
+
+}
+
+void init_highlight(){
+	for (int i =0; i < 9; i++){
+		for (int j =0; j < 9; j++){
+			if (referenceboard[j][i] == '-'){
+				highlight(i,j);
+				break;
+			}
+		}
+		if (highlight_i != -1 && highlight_j != -1)
+			break;
+	}	
+}
+
+void highlight(int i, int j){	
+	highlight_i = i;
+	highlight_j = j;
+	drawRectangle((i+5.5)*20-2,(j+0.5)*20-2, 10, 10,LIGHTMAGENTA,answerboard[j][i]);
+}
+
+void unhighlight(int i, int j){	
+	drawRectangle((i+5.5)*20-2,(j+0.5)*20-2, 10, 10,LIGHTBLUE,answerboard[j][i]);
+}
+
+void check(){
+	if(checkRow()==TRUE && checkColumn()==TRUE && checkSquare()==TRUE && checkIfFull()==TRUE){
+		solved_page();
+	}else unsolved_page();
+}
+
+void move(){
+
+	while(1){
+		key_pressed=(char)getch();
+		switch(key_pressed){
+			case UP:
+					unhighlight(highlight_i,highlight_j);
+					highlight(highlight_i,(highlight_j-1)%9);
+			break;
+			case DOWN:
+					unhighlight(highlight_i,highlight_j);
+					highlight(highlight_i,(highlight_j+1)%9);
+			break;
+			case LEFT:
+					unhighlight(highlight_i,highlight_j);
+					highlight((highlight_i-1)%9,highlight_j);
+			break;
+			case RIGHT:
+					unhighlight(highlight_i,highlight_j);
+					highlight((highlight_i+1)%9,highlight_j);
+			break;
+			case MENU:
+				start_page();
+			break;
+			case CHECK:
+				check();
+			break;
+			// case INSTRUCTION:
+			// 	dummy_page("instruction");
+			// break;
+			case RESET:
+				copyboard(referenceboard,answerboard);
+			break;
+			case NEW:
+				randomizeBoard(referenceboard,answerboard);
+			break;
+			case QUIT:
+				quit();
+			break;
+			case '0':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,' ');
+				answerboard[highlight_j][highlight_i]='-';
+			break;
+			case '1':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'1');
+				answerboard[highlight_j][highlight_i]='1';
+			break;
+			case '2':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'2');
+				answerboard[highlight_j][highlight_i]='2';
+			break;
+			case '3':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'3');
+				answerboard[highlight_j][highlight_i]='3';
+			break;
+			case '4':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'4');
+				answerboard[highlight_j][highlight_i]='4';		
+			break;
+			case '5':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'5');
+				answerboard[highlight_j][highlight_i]='5';
+			break;
+			case '6':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'6');
+				answerboard[highlight_j][highlight_i]='6';
+			break;
+			case '7':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'7');
+				answerboard[highlight_j][highlight_i]='7';
+			break;
+			case '8':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'8');
+				answerboard[highlight_j][highlight_i]='8';
+			break;
+			case '9':
+				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'9');
+				answerboard[highlight_j][highlight_i]='9';
+			break;
+		}
+	}
+}
+
+void quit(){
+	set_graphics(VGA_TEXT80X25X16);
+	clrscr();
+	exit(0);
 }
