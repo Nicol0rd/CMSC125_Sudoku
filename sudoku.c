@@ -1,17 +1,35 @@
 #include "../../sdk/dexsdk.h"
+#include "../../sdk/time.h"
 
 #define FALSE -1
 #define TRUE 1
-
+#define PLAY 'p'
+#define QUIT 'q'
 int main(){
 	int x,y;
 	char a;
 	char referenceboard[9][9]={};
 	char answerboard[9][9]={};
+	char key_pressed = 'p';
+
 	randomizeBoard(referenceboard,answerboard);
 	// while(printStartPage() != 'P');
 	set_graphics(VGA_320X200X256);
-	header(8,5);
+	print_board();
+	//start_page(8,5);
+	
+	key_pressed=(char)getch();
+	if (key_pressed == PLAY	){
+		drawRectangle(0,0,320,220, BLACK,-1); //clear screen
+		instruction_page();
+		key_pressed=(char)getch();
+	}
+
+	if(key_pressed == QUIT){
+		set_graphics(VGA_TEXT80X25X16);
+		clrscr();
+	}	
+
 
 	printPuzzle(referenceboard);
 	printPuzzle(answerboard);
@@ -304,11 +322,76 @@ void printPuzzle(char puzzle[9][9]){
 }
 
 
+
+//gui
 //displays header
-header(int x, int y){	
-	write_text("SUDOKU!",120,40,YELLOW,1); //title
+start_page(int x, int y){	
+	write_text("Welcome to Sudoku",100,40,YELLOW,1); //title
 
 	//menu options
-	write_text("1 - Start",40,160,WHITE,0); 
-	write_text("2 - Quit",200,160,WHITE,0);
+	write_text("Press 'P' to start game",100,140,WHITE,0); 
+	write_text("Press 'Q' to quit",100,160,WHITE,0);
+}
+
+instruction_page(){
+	write_text("Instruction",100,160,WHITE,1); 
+}
+void drawRectangle(int x, int y, int w, int h, int color,int num){
+   int i,j;
+   char* snum;
+   for (i=y;i<=(y+h);i++)
+      for (j=x;j<=(x+w);j++)
+         write_pixel(j,i,color);
+    switch (num){
+     	case 1:
+    	write_text("1",x+2,y+2,BLACK,0);
+    	break;
+     	case 2:
+    	write_text("2",x+2,y+2,BLACK,0);
+    	
+    	 break;
+     	case 3:
+    	write_text("3",x+2,y+2,BLACK,0);
+    	
+    	 break;
+     	case 4:
+    	write_text("4",x+2,y+2,BLACK,0);
+    	
+    	 break;
+     	case 5:
+    	write_text("5",x+2,y+2,BLACK,0);
+
+    	 break;
+     	case 6:
+    	write_text("6",x+2,y+2,BLACK,0);
+    	break;
+     	case 7:
+    	write_text("7",x+2,y+2,BLACK,0);
+    	break;
+     	case 8:
+    	write_text("8",x+2,y+2,BLACK,0);
+    	break;
+     	case 9:
+	    write_text("9",x+2,y+2,BLACK,0);
+    	break;
+    }
+}
+
+
+void print_board(){
+
+ for (int i = 0; i < 9; i++){
+ 	for (int j = 0; j < 9; j++){
+ 		drawRectangle(i*20,j*20, 20, 20,BLUE,j+1);
+ 		drawRectangle(i*20-10,j*20-10, 10, 10,YELLOW,j+1);
+ 	}
+ }
+  drawRectangle(145,145, 20, 20,BLUE,0);
+  drawRectangle(150,150, 10, 10,WHITE,9);
+  // drawRectangle(145,150, 5, 10,BLUE,0);
+  // drawRectangle(160,150, 5, 10,BLUE,0);
+  // drawRectangle(150,145, 10, 5,BLUE,0);
+  // drawRectangle(150,160, 10, 5,BLUE,0);
+
+
 }
