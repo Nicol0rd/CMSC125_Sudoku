@@ -62,12 +62,12 @@ int main(){
 
  }
 
-//sudoku problems
+//sudoku board
 void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 	//srand(time(NULL));
 	int r = rand() % 10;
 	printf("randomized %d\n", r);
-	r=0;
+	r=10;
 	if (r==0){
 		char newboard[9][9] = {		
 			{'-','6','-','-','7','2','-','-','1'},
@@ -208,8 +208,21 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 		};
 	copyboard(newboard,referencboard);
 	copyboard(newboard,answerboard);
+	}else if (r==10){
+		char newboard[9][9] = {
+			{'8','2','7','1','5','4','3','9','6'},
+			{'9','6','5','3','2','7','1','4','8'},
+			{'3','4','1','6','8','9','7','5','2'},
+			{'5','9','3','4','6','8','2','7','1'},
+			{'4','7','2','5','1','3','6','8','9'},
+			{'6','1','8','9','7','2','4','3','5'},
+			{'7','8','6','2','3','5','9','1','4'},
+			{'1','5','4','7','9','6','8','2','3'},
+			{'2','3','9','8','4','1','5','6','7'}
+		};
+	copyboard(newboard,referencboard);
+	copyboard(newboard,answerboard);
 	}
-
 }
 
 void copyboard(char fromBoard[9][9],char toBoard[9][9]){
@@ -221,8 +234,7 @@ void copyboard(char fromBoard[9][9],char toBoard[9][9]){
 	}
 }
 
-//
-
+//checkers
 int checkIfFull(){
 	int i,j;
 	for(i = 0; i < 9; i++){
@@ -233,31 +245,33 @@ int checkIfFull(){
 	}return TRUE;
 }
 
-void getInput(char * a){
-	printf("Get Input\n");
-	// scanf("%c", a);
-}
-
-void insertInput(char referenceboard[9][9],char answerboard[9][9],int x, int y, char a){
-	if (referenceboard[x][y] == '-')
-		answerboard[x][y]=a;
-}
+// int checkRow(){
+// 	int i,j,k = 1;
+// 	for(i = 0; i < 9; i++){
+// 		for(j = 0; j < 9; j++){
+// 			do{
+// 				if(answerboard[i][j] == answerboard[i][k]){
+// 					return	-1;
+// 				}else k++;
+// 			}while(k < 9);
+// 		}
+// 		k = 1;
+// 	}
+// 	return TRUE;
+// }
 
 int checkRow(){
-	int i,j,k = 1;
+	char rowElements[9];
+	int i, j, k;
 	for(i = 0; i < 9; i++){
 		for(j = 0; j < 9; j++){
-			do{
-				if(answerboard[i][j] == answerboard[i][k]){
-					return	-1;
-				}else k++;
-			}while(k < 9);
+			rowElements[j]=answerboard[i][j];
 		}
-		k = 1;
+		if (checker(rowElements) == FALSE)
+			return FALSE;
 	}
 	return TRUE;
 }
-
 
 
 int checkColumn(){
@@ -274,7 +288,6 @@ int checkColumn(){
 	}
 	return TRUE;
 }
-
 
 // int checkColumn(char puzzle[9][9]){
 // 	for (int i = 0; i < 9; i++){
@@ -305,20 +318,13 @@ int checker(char tobeCheck[9]){
 		for (int j=0; j < 9; j++){
 			if (i == tobeCheck[j])
 				continue;
+			if (i != tobeCheck[j] && i==9)
+				return FALSE;
 		}
 	}
-	return FALSE;
+	return TRUE;
 }
 
-void getCoord(int* x, int* y){
-	printf("Get Coordinates\n");
-	printf("X: \n");
-	// scanf("%d", x);
-	printf("Y: \n");
-	// scanf("%d", y);
-}
-
-//
 
 char printStartPage(){
 	char isStart;
@@ -355,7 +361,8 @@ void start_page(){
 
 void solved_page(){
 	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
-	write_text("Puzzle Solved! Congratulations!",100,40,YELLOW,1); //title
+	write_text("Puzzle Solved!",100,40,YELLOW,1); //title
+	write_text("Congratulations!",90,50,YELLOW,1); //title
 
 
 	write_text("Press 'N' to start new game",100,140,WHITE,0); 
@@ -372,14 +379,12 @@ void solved_page(){
 }
 
 void unsolved_page(){
-	
 	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
 	write_text("Incorrect answers",100,40,YELLOW,1); //title
 
-
-	write_text("Press 'N' to start new game",100,140,WHITE,0); 
-	write_text("Press 'B' to go back",100,160,WHITE,0);
-	write_text("Press 'Q' to quit",100,180,WHITE,0);	
+	write_text("Press 'N' to start new game",80,140,WHITE,0); 
+	write_text("Press 'B' to go back",80,160,WHITE,0);
+	write_text("Press 'Q' to quit",80,180,WHITE,0);	
 	key_pressed=(char)getch();
 	switch(key_pressed){
 		case NEW:
@@ -497,7 +502,7 @@ void unhighlight(int i, int j){
 }
 
 void check(){
-	if(checkRow()==TRUE && checkColumn()==TRUE && checkSquare()==TRUE && checkIfFull()==TRUE){
+	if(checkRow()==TRUE || checkColumn()==TRUE || checkSquare()==TRUE){
 		solved_page();
 	}else unsolved_page();
 }
@@ -534,9 +539,11 @@ void move(){
 			// break;
 			case RESET:
 				copyboard(referenceboard,answerboard);
+				gameproper();
 			break;
 			case NEW:
 				randomizeBoard(referenceboard,answerboard);
+				gameproper();
 			break;
 			case QUIT:
 				quit();
