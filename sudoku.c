@@ -43,7 +43,7 @@ int main(){
  }
 
 //sudoku problems
-void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
+void randomizeBoard(char referenceboard[9][9],char answerboard[9][9]){
 	//srand(time(NULL));
 	int r = rand() % 10;
 	printf("randomized %d\n", r);
@@ -60,7 +60,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'-','-','8','-','-','9','-','7','-'},
 			{'-','-','-','7','2','1','-','8','3'}
 		};	
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);
 	}else if(r==1){
 		char newboard[9][9] = {	
@@ -74,7 +74,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'-','-','-','-','-','1','8','-','-'},
 			{'-','-','8','7','6','-','-','-','-'}
 		};
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);
 	}else if(r==2){
 		char newboard[9][9] = {		
@@ -88,7 +88,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'3','6','1','-','7','9','-','8','-'},
 			{'-','-','-','-','6','-','-','3','7'}
 		};	
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);
 	}else if(r==3){
 		char newboard[9][9] ={
@@ -102,7 +102,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'-','-','9','4','-','8','-','-','-'},
 			{'8','-','-','-','-','1','7','-','-'}
 		};	
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);	
 	}else if(r==4){
 		char newboard[9][9] = {		
@@ -116,7 +116,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'-','-','-','-','7','-','9','-','5'},
 			{'-','-','-','-','-','1','-','3','-'}
 		};	
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);
 	}else if(r==5){
 		char newboard[9][9] = {		
@@ -130,7 +130,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'-','-','9','-','-','8','2','7','-'},
 			{'-','-','-','-','-','-','-','-','-'}
 		};
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);
 	}else if(r==6){
 		char newboard[9][9] = {		
@@ -144,7 +144,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'-','2','7','9','-','-','-','4','-'}, 
 			{'4','-','5','1','-','-','-','-','-'}
 		};	
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);	
 	}else if(r==7){
 		char newboard[9][9] = {		
@@ -158,7 +158,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'-','-','-','-','-','9','-','3','-'},
 			{'-','-','3','7','6','5','9','-','1'}
 		};	
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);
 	}else if(r==8){
 		char newboard[9][9] = {		
@@ -172,7 +172,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'-','-','6','-','5','9','-','7','-'},
 			{'-','-','-','-','-','-','-','-','-'}
 		};
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);
 	}else if(r==9){
 		char newboard[9][9] = {		
@@ -186,7 +186,7 @@ void randomizeBoard(char referencboard[9][9],char answerboard[9][9]){
 			{'-','6','-','-','7','-','9','-','-'},
 			{'7','1','5','3','9','-','-','-','-'}
 		};
-	copyboard(newboard,referencboard);
+	copyboard(newboard,referenceboard);
 	copyboard(newboard,answerboard);
 	}
 
@@ -296,6 +296,12 @@ void instruction_page(){
     write_text("[0]-Erase",5,160,WHITE,0);
 }
 
+void ingame_instruction(){
+	write_text("[W,A,S,D]",5,20,WHITE,0);
+	write_text("UP,LEFT",5,40,WHITE,0);
+	write_text("DOWN,RIGHT",5,60,WHITE,0);
+}	
+
 void solved_page(){
 	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
 	write_text("Puzzle Solved! Congratulations!",100,40,YELLOW,1); //title
@@ -333,11 +339,6 @@ void unsolved_page(){
 
 	}
 }
-void dummy_page(char * dummy){
-	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
-	write_text(dummy,100,160,WHITE,1); 
-}
-
 void drawRectangle(int x, int y, int w, int h, int color,char num){	
    int i,j;
    char* snum;
@@ -408,6 +409,7 @@ void draw_board_border(){
 void gameproper(){
 	print_board();
 	init_highlight();
+	ingame_instruction();
 	move();
 
 }
@@ -425,7 +427,7 @@ void init_highlight(){
 	}	
 }
 
-void highlight(int i, int j){	
+void highlight(int i, int j){		
 	if(i < 0){ 
 		highlight_i = 8;
 		highlight_j = j;
@@ -441,8 +443,15 @@ void highlight(int i, int j){
 	drawRectangle((i+5.5)*20-2,(j+0.5)*20-2, 10, 10,LIGHTMAGENTA,answerboard[j][i]);
 }
 
+
+
+
 void unhighlight(int i, int j){	
-	drawRectangle((i+5.5)*20-2,(j+0.5)*20-2, 10, 10,LIGHTBLUE,answerboard[j][i]);
+	if(referenceboard[j][i] == '-'){
+		drawRectangle((i+5.5)*20-2,(j+0.5)*20-2, 10, 10,LIGHTBLUE,answerboard[j][i]);
+	}	
+		drawRectangle((i+5.5)*20-2,(j+0.5)*20-2, 10, 10,BLUE,answerboard[j][i]);
+		
 }
 
 void check(){
@@ -469,6 +478,7 @@ void move(){
 					highlight((highlight_i-1)%9,highlight_j);
 			break;
 			case RIGHT:
+
 					unhighlight(highlight_i,highlight_j);
 					highlight((highlight_i+1)%9,highlight_j);
 			break;
@@ -481,6 +491,10 @@ void move(){
 			case RESET:
 				copyboard(referenceboard,answerboard);
 			break;
+			case BACK:
+				drawRectangle(0,0,320,220, BLACK,' ');
+				start_page();
+				break;
 			case NEW:
 				randomizeBoard(referenceboard,answerboard);
 			break;
@@ -488,61 +502,61 @@ void move(){
 				quit();
 			break;
 			case '0':
-				if(referenceboard[highlight_j][highlight_i] = '-' ){
-				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,' ');
-				answerboard[highlight_j][highlight_i]='-';
+				if(referenceboard[highlight_i][highlight_j] = '-' ){
+					drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,' ');
+					answerboard[highlight_j][highlight_i]='-';
 				}
 			break;
 			case '1':
-				if(referenceboard[highlight_j][highlight_i] = '-'){
+				if(referenceboard[highlight_i][highlight_j] = '-'){
 					drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'1');
 					answerboard[highlight_j][highlight_i]='1';
 				}
 			break;
 			case '2':
-				if(referenceboard[highlight_j][highlight_i] = '-'){
+				if(referenceboard[highlight_i][highlight_j] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'2');
 				answerboard[highlight_j][highlight_i]='2';
 				}
 			break;
 			case '3':
-				if(referenceboard[highlight_j][highlight_i] = '-'){
+				if(referenceboard[highlight_i][highlight_j] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'3');
 				answerboard[highlight_j][highlight_i]='3';
 				}
 			break;
 			case '4':
-				if(referenceboard[highlight_j][highlight_i] = '-'){
+				if(referenceboard[highlight_i][highlight_j] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'4');
 				answerboard[highlight_j][highlight_i]='4';		
 				}
 			break;
 			case '5':
-				if(referenceboard[highlight_j][highlight_i] = '-'){
+				if(referenceboard[highlight_i][highlight_j] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'5');
 				answerboard[highlight_j][highlight_i]='5';
 				}
 			break;
 			case '6':
-				if(referenceboard[highlight_j][highlight_i] = '-'){
+				if(referenceboard[highlight_i][highlight_j] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'6');
 				answerboard[highlight_j][highlight_i]='6';
 				}
 			break;
 			case '7':
-				if(referenceboard[highlight_j][highlight_i] = '-'){
+				if(referenceboard[highlight_i][highlight_j] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'7');
 				answerboard[highlight_j][highlight_i]='7';
 				}
 			break;
 			case '8':
-				if(referenceboard[highlight_j][highlight_i] = '-'){
+				if(referenceboard[highlight_i][highlight_j] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'8');
 				answerboard[highlight_j][highlight_i]='8';
 				}
 			break;
 			case '9':
-				if(referenceboard[highlight_j][highlight_i] = '-'){
+				if(referenceboard[highlight_i][highlight_j] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'9');
 				answerboard[highlight_j][highlight_i]='9';
 				}
