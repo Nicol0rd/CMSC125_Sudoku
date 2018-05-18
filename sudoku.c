@@ -245,21 +245,6 @@ int checkIfFull(){
 	}return TRUE;
 }
 
-// int checkRow(){
-// 	int i,j,k = 1;
-// 	for(i = 0; i < 9; i++){
-// 		for(j = 0; j < 9; j++){
-// 			do{
-// 				if(answerboard[i][j] == answerboard[i][k]){
-// 					return	-1;
-// 				}else k++;
-// 			}while(k < 9);
-// 		}
-// 		k = 1;
-// 	}
-// 	return TRUE;
-// }
-
 int checkRow(){
 	char rowElements[9];
 	int i, j, k;
@@ -267,60 +252,51 @@ int checkRow(){
 		for(j = 0; j < 9; j++){
 			rowElements[j]=answerboard[i][j];
 		}
+
 		if (checker(rowElements) == FALSE)
 			return FALSE;
 	}
 	return TRUE;
 }
 
-
 int checkColumn(){
-	int i,j,k=1;
-	for(i = 0; i < 9; i ++){
-		for(j = 0; j < 9; j++){
-			do{
-				if(answerboard[i][j] == answerboard[k][j]){
-					return FALSE;
-				}else k++;
-			}while(k < 9);
+	char columnElements[9];
+	int i, j;
+	for (i = 0; i < 9; i++){
+		for (j = 0; j < 9; j++){
+			columnElements[j] = answerboard[j][i];
 		}
-		k = 1;
-	}
-	return TRUE;
-}
-
-// int checkColumn(char puzzle[9][9]){
-// 	for (int i = 0; i < 9; i++){
-// 		for (int j = 0; j < 9; j++){
-// 			for (int k = 1; k < 10; k++){
-// 				if (k )
-// 			}
-// 		}
-
-// 	}
-// }
-int checkSquare(){
-	char squareElements[9];
-	for (int k = 0; k < 9; k++){
-		for (int i = 0; i < 3; i++){
-			for (int j = 0; j < 3; j++){
-				squareElements[i*j] = answerboard[k/3*3+i][k/3*3+j];
-			}
-		}
-		if (checker(squareElements) == FALSE)
+		if (checker(columnElements) == FALSE)
 			return FALSE;
 	}
 	return TRUE;
 }
 
-int checker(char tobeCheck[9]){
-	for (int i=1; i < 10; i++){
-		for (int j=0; j < 9; j++){
-			if (i == tobeCheck[j])
-				continue;
-			if (i != tobeCheck[j] && i==9)
+
+int checkSquare(){
+	char squareElements[9];
+	for (int k = 0; k < 9; k++){
+		for (int i = 0; i < 3; i++){
+			for (int j = 0; j < 3; j++)
+				squareElements[i*3+j] = answerboard[(k%3)*3+i][(k%3)*3+j];
+			if (checker(squareElements) == FALSE)
 				return FALSE;
 		}
+	}
+	return TRUE;
+}
+
+
+int checker(char tobeCheck[9]){
+	char checker_array[9] = {'1','2','3','4','5','6','7','8','9'};
+	for (int i=0; i < 9; i++){
+		for (int j=0; j < 9; j++){
+			if (checker_array[i] == tobeCheck[j])
+				break;
+			if (checker_array[i] != tobeCheck[j] && j==8)
+				return FALSE;
+		}
+		printf("\n");
 	}
 	return TRUE;
 }
