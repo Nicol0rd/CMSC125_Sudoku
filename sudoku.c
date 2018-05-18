@@ -29,16 +29,16 @@ int main(){
 	set_graphics(VGA_320X200X256);
 
 	start_page();
-	do{
+/*	do{
 		key_pressed=(char)getch();
-		if (key_pressed == PLAY	){
-			randomizeBoard(referenceboard,answerboard);
-			gameproper();
-		}if(key_pressed == INSTRUCTION){
-			instruction_page();
-		}
+		// if (key_pressed == PLAY	){
+		// 	randomizeBoard(referenceboard,answerboard);
+		// 	gameproper();
+		// }if(key_pressed == INSTRUCTION){
+		// 	instruction_page();
+		// }
 	}while(key_pressed!=QUIT);
-	quit();
+	quit();*/
 
  }
 
@@ -282,11 +282,26 @@ int checker(char tobeCheck[9]){
 //gui
 //displays header
 void start_page(){	
+	drawRectangle(0,0,320,220,BLACK,0);
 	write_text("Welcome to Sudoku",100,40,YELLOW,1); //title
 	//menu options
 	write_text("[P] - Start Game",70,140,WHITE,0); 
 	write_text("[I] - Instruction",70,160,WHITE,0);
 	write_text("[Q] - Quit",70,180,WHITE,0);
+	key_pressed=(char)getch();
+	switch(key_pressed){
+		case PLAY:			
+			randomizeBoard(referenceboard,answerboard);
+			gameproper();
+			break;
+		case INSTRUCTION:
+			instruction_page();
+			break;
+		case QUIT:
+			quit();
+			break;
+
+	}
 }
 
 void instruction_page(){
@@ -295,11 +310,23 @@ void instruction_page(){
 	write_text("[C]-Check",5,20,WHITE,0);
 	write_text("[R]-Reset",5,40,WHITE,0);
 	write_text("[N]-NewGame",5,60,WHITE,0);
-	write_text("[B]-MainMenu",5,80,WHITE,0);
+	write_text("[M]-MainMenu",5,80,WHITE,0);
 	write_text("[W]-UP,[A]-LEFT",5,100,WHITE,0);
 	write_text("[S]-DOWN,[D]-RIGHT",5,120,WHITE,0);
 	write_text("[1-9]-INPUT",5,140,WHITE,0);
     write_text("[0]-Erase",5,160,WHITE,0);
+	key_pressed=(char)getch();
+	switch(key_pressed){
+		case MENU:
+			start_page();
+			break;
+		case BACK:
+			gameproper();
+			break;
+		case QUIT:
+			quit();
+	}
+
 }
 
 void solved_page(){
@@ -309,6 +336,7 @@ void solved_page(){
 
 	write_text("Press 'N' to start new game",100,140,WHITE,0); 
 	write_text("Press 'Q' to quit",100,160,WHITE,0);
+	key_pressed=(char)getch();
 	switch(key_pressed){
 		case NEW:
 			randomizeBoard(referenceboard,answerboard);
@@ -386,6 +414,10 @@ void drawRectangle(int x, int y, int w, int h, int color,char num){
 
 void print_board(){
 	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
+	write_text("[I]See",5,60,WHITE,0); 
+	write_text("instruction",5,70,WHITE,0); 
+	write_text("[C]Check",5,90,WHITE,0); 
+	write_text("[Q]Quit",5,110,WHITE,0); 
 
 	draw_board_border();
 	 for (int i = 0; i < 9; i++){
@@ -486,6 +518,8 @@ void move(){
 			case MENU:
 				start_page();
 			break;
+			case INSTRUCTION:
+				instruction_page();
 			case CHECK:
 				check();
 			break;
@@ -560,7 +594,7 @@ void move(){
 				answerboard[highlight_j][highlight_i]='9';
 				}
 			break;
-		}
+		}highlight(highlight_i,highlight_j);
 	}
 }
 
