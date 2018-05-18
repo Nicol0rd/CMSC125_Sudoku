@@ -32,33 +32,13 @@ int main(){
 	do{
 		key_pressed=(char)getch();
 		if (key_pressed == PLAY	){
-			dummy_page("instruction");
-			(char)getch();
-			dummy_page("press any key to play");
-			(char)getch();
 			randomizeBoard(referenceboard,answerboard);
 			gameproper();
-		}break;
-	// print_board();
-	}	
-	while(key_pressed!=QUIT);
+		}if(key_pressed == INSTRUCTION){
+			instruction_page();
+		}
+	}while(key_pressed!=QUIT);
 	quit();
-	
-
-
-// 	printPuzzle(referenceboard);
-// 	printPuzzle(answerboard);
-// 	do{
-// 		getCoord(&x,&y);
-// 		getchar();
-// 		getInput(&a);
-// 		insertInput(referenceboard,answerboard,x,y,a);
-// 		printPuzzle(referenceboard);
-// 		printPuzzle(answerboard);
-// 	}while(checkIfFull(answerboard) == -1);
-
-// 	printf("%d",checkColumn(answerboard));
-// 	printf("%d",checkRow(answerboard));
 
  }
 
@@ -233,15 +213,6 @@ int checkIfFull(){
 	}return TRUE;
 }
 
-void getInput(char * a){
-	printf("Get Input\n");
-	// scanf("%c", a);
-}
-
-void insertInput(char referenceboard[9][9],char answerboard[9][9],int x, int y, char a){
-	if (referenceboard[x][y] == '-')
-		answerboard[x][y]=a;
-}
 
 int checkRow(){
 	int i,j,k = 1;
@@ -275,17 +246,6 @@ int checkColumn(){
 	return TRUE;
 }
 
-
-// int checkColumn(char puzzle[9][9]){
-// 	for (int i = 0; i < 9; i++){
-// 		for (int j = 0; j < 9; j++){
-// 			for (int k = 1; k < 10; k++){
-// 				if (k )
-// 			}
-// 		}
-
-// 	}
-// }
 int checkSquare(){
 	char squareElements[9];
 	for (int k = 0; k < 9; k++){
@@ -310,54 +270,35 @@ int checker(char tobeCheck[9]){
 	return FALSE;
 }
 
-void getCoord(int* x, int* y){
-	printf("Get Coordinates\n");
-	printf("X: \n");
-	// scanf("%d", x);
-	printf("Y: \n");
-	// scanf("%d", y);
-}
-
-//
-
-char printStartPage(){
-	char isStart;
-	printf("Welcome To Sudoku\n");
-	printf("Press 'P' to game\n");
-	// scanf("%c", &);
-	return isStart;
-}
-
-void printPuzzle(char puzzle[9][9]){
-	int i, j;
-	for(i = 0; i < 9; i++){
-		for(j = 0; j < 9; j++){
-			printf("%c ",puzzle[i][j]);
-		}
-		printf("\n");
-	}
-	printf("-------------------------------\n");
-}
-
 
 
 //gui
 //displays header
 void start_page(){	
-	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
-
 	write_text("Welcome to Sudoku",100,40,YELLOW,1); //title
 
 	//menu options
-	write_text("Press 'P' to start game",100,140,WHITE,0); 
-	write_text("Press 'Q' to quit",100,160,WHITE,0);
+	write_text("[P] - Start Game",70,140,WHITE,0); 
+	write_text("[I] - Instruction",70,160,WHITE,0);
+	write_text("[Q] - Quit",70,180,WHITE,0);
+}
+
+void instruction_page(){
+	drawRectangle(0,0,320,220,BLACK,0);
+	write_text("HOTKEYS!!!!!",100,10,WHITE,1); 
+	write_text("[C]-Check",5,20,WHITE,0);
+	write_text("[R]-Reset",5,40,WHITE,0);
+	write_text("[N]-NewGame",5,60,WHITE,0);
+	write_text("[B]-MainMenu",5,80,WHITE,0);
+	write_text("[W]-UP,[A]-LEFT",5,100,WHITE,0);
+	write_text("[S]-DOWN,[D]-RIGHT",5,120,WHITE,0);
+	write_text("[1-9]-INPUT",5,140,WHITE,0);
+    write_text("[0]-Erase",5,160,WHITE,0);
 }
 
 void solved_page(){
 	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
 	write_text("Puzzle Solved! Congratulations!",100,40,YELLOW,1); //title
-
-
 	write_text("Press 'N' to start new game",100,140,WHITE,0); 
 	write_text("Press 'Q' to quit",100,160,WHITE,0);
 	switch(key_pressed){
@@ -375,11 +316,9 @@ void unsolved_page(){
 	
 	drawRectangle(0,0,320,220, BLACK,' '); //clear screen
 	write_text("Incorrect answers",100,40,YELLOW,1); //title
-
-
-	write_text("Press 'N' to start new game",100,140,WHITE,0); 
-	write_text("Press 'B' to go back",100,160,WHITE,0);
-	write_text("Press 'Q' to quit",100,180,WHITE,0);	
+	write_text("Press 'N' to start new game",70,140,WHITE,0); 
+	write_text("Press 'B' to go back",70,160,WHITE,0);
+	write_text("Press 'Q' to quit",70,180,WHITE,0);	
 	key_pressed=(char)getch();
 	switch(key_pressed){
 		case NEW:
@@ -487,8 +426,18 @@ void init_highlight(){
 }
 
 void highlight(int i, int j){	
+	if(i < 0){ 
+		highlight_i = 8;
+		highlight_j = j;
+		i = 8;
+	}if(j < 0){
+		highlight_i = i;
+		highlight_j = 8;
+		j = 8;
+	}else{
 	highlight_i = i;
 	highlight_j = j;
+	}
 	drawRectangle((i+5.5)*20-2,(j+0.5)*20-2, 10, 10,LIGHTMAGENTA,answerboard[j][i]);
 }
 
@@ -529,9 +478,6 @@ void move(){
 			case CHECK:
 				check();
 			break;
-			// case INSTRUCTION:
-			// 	dummy_page("instruction");
-			// break;
 			case RESET:
 				copyboard(referenceboard,answerboard);
 			break;
@@ -542,48 +488,72 @@ void move(){
 				quit();
 			break;
 			case '0':
+				if(referenceboard[highlight_j][highlight_i] = '-' ){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,' ');
 				answerboard[highlight_j][highlight_i]='-';
+				}
 			break;
 			case '1':
-				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'1');
-				answerboard[highlight_j][highlight_i]='1';
+				if(referenceboard[highlight_j][highlight_i] = '-'){
+					drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'1');
+					answerboard[highlight_j][highlight_i]='1';
+				}
 			break;
 			case '2':
+				if(referenceboard[highlight_j][highlight_i] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'2');
 				answerboard[highlight_j][highlight_i]='2';
+				}
 			break;
 			case '3':
+				if(referenceboard[highlight_j][highlight_i] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'3');
 				answerboard[highlight_j][highlight_i]='3';
+				}
 			break;
 			case '4':
+				if(referenceboard[highlight_j][highlight_i] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'4');
 				answerboard[highlight_j][highlight_i]='4';		
+				}
 			break;
 			case '5':
+				if(referenceboard[highlight_j][highlight_i] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'5');
 				answerboard[highlight_j][highlight_i]='5';
+				}
 			break;
 			case '6':
+				if(referenceboard[highlight_j][highlight_i] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'6');
 				answerboard[highlight_j][highlight_i]='6';
+				}
 			break;
 			case '7':
+				if(referenceboard[highlight_j][highlight_i] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'7');
 				answerboard[highlight_j][highlight_i]='7';
+				}
 			break;
 			case '8':
+				if(referenceboard[highlight_j][highlight_i] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'8');
 				answerboard[highlight_j][highlight_i]='8';
+				}
 			break;
 			case '9':
+				if(referenceboard[highlight_j][highlight_i] = '-'){
 				drawRectangle((highlight_i+5.5)*20-2,(highlight_j+0.5)*20-2, 10, 10,LIGHTBLUE,'9');
 				answerboard[highlight_j][highlight_i]='9';
+				}
 			break;
 		}
 	}
 }
+
+
+
+
 
 void quit(){
 	set_graphics(VGA_TEXT80X25X16);
